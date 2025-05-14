@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input';
 import axios from 'axios';
 
@@ -12,6 +13,8 @@ const Auth = () => {
     password: ''
   });
 
+  const navigate = useNavigate();
+
   const toggleMode = () => setIsLogin(!isLogin);
 
   const handleChange = (e) => {
@@ -24,16 +27,22 @@ const Auth = () => {
 
     try {
       const response = await axios.post(`http://localhost:5000${endpoint}`, formData);
-      alert('Успешно!');
-      localStorage.setItem('token', response.data.token);
+      
+      if (isLogin) {
+        localStorage.setItem('token', response.data.token);
+        navigate('/profile');
+      } else {
+        setIsLogin(true); 
+      }
     } catch (err) {
-      alert('Ошибка: ' + err.response.data.message);
+      alert('Ошибка: ' + (err.response?.data?.message || 'Неизвестная ошибка'));
     }
   };
 
+
   return (
-  <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-    <form onSubmit={handleSubmit} className="bg-white p-8 sm:p-10 rounded-2xl shadow-lg w-full max-w-md border border-gray-200">
+  <div className="page-center">
+    <form onSubmit={handleSubmit} className="card-box">
       <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
         {isLogin ? 'Вход' : 'Регистрация'}
       </h2>

@@ -21,12 +21,10 @@ const createProduct = async (req, res) => {
 
 
 const getProducts = async (req, res) => {
-  const user_id = req.user.id;
 
   try {
     const result = await pool.query(
-      'SELECT * FROM products WHERE user_id = $1',
-      [user_id]
+      'SELECT * FROM products',
     );
 
     res.json(result.rows);
@@ -38,12 +36,11 @@ const getProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
   const { id } = req.params;
-  const user_id = req.user.id;
 
   try {
     const result = await pool.query(
-      'SELECT * FROM products WHERE id = $1 AND user_id = $2',
-      [id, user_id]
+      'SELECT * FROM products WHERE id = $1',
+      [id]
     );
 
     if (result.rows.length === 0) {
